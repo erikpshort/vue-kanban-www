@@ -1,11 +1,7 @@
 <template>
     <div class="col xs12 s6 m2" droppable="true" v-on:drop.capture="addTask" ondragover="event.preventDefault()">
         <div class="card-panel teal white-text">
-            <span>{{list.name}}
-                    </span>
-
-            <br>
-            <br>
+            <input :value="list.name" :placeholder="list.name" v-model="name" v-on:keyup.enter="changeListName(name)">
             <task v-for="(task, i) in tasks" :task="task" draggable="true" v-on:dragstart.capture="moving"></task>
             <taskForm :list="list"></taskForm>
             <a class="right black-text" @click="deleteList(list)">Delete List</a>
@@ -24,6 +20,11 @@
         name: 'lists',
         props: ['list'],
         components: { task, taskForm },
+        data() {
+            return {
+                name: this.list.name
+            }
+        },
         computed: {
             tasks() {
                 let vm = this
@@ -36,14 +37,21 @@
             addTask(event) {
                 var task = JSON.parse(event.dataTransfer.getData('text/javascript'))
                 var id = task._id
-                var object = { listId: this.list._id}
+                var object = { listId: this.list._id }
                 var boardId = this.list.boardId
                 this.$root.$data.store.actions.changeTask(boardId, object, id)
+                console.log("We've Just Landed")
             },
             deleteList(list) {
                 var x = list._id
                 var y = list.boardId
                 this.$root.$data.store.actions.deleteList(x, y)
+            },
+            changeListName(name){
+                var obj = { name: this.name}
+                var boardId = this.list.boardId
+                var listId = this.list._id
+                this.$root.$data.store.actions.changeList(listId, obj, boardId)
             }
         },
         mounted() {

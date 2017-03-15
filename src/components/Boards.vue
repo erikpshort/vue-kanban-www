@@ -3,10 +3,14 @@
         <div class="row">
             <h1 class="center">Your Boards</h1>
             <div class="col xs12 s6 m2" v-for="(board, i) in userBoards">
-                <div class="card-panel teal" @click="getBoard(board)">
-                    <span class="white-text">{{board.name}}
+                <div class="card-panel teal">
+                    <span class="white-text" @click="getBoard(board)" v-if="!edit">{{board.name}}
                     </span>
-                    <a class="waves-effect amber darken-4 btn-flat" id="right" @click="deleteBoard(board)">Del</a>
+                    <input :value="name" placeholder="name" v-model="name" v-if="edit">
+                    <i id="right" class="tiny material-icons" v-on:click="show = !show">mode_edit</i><br v-if="show">
+                    <br>
+                    <a class="black-text" id="right" @click="deleteBoard(board)" v-if="show">Del</a>
+                    <a class="black-text" id="left" v-if="show" v-on:click="edit = !edit">Edit</a>
                 </div>
             </div>
            <boardForm></boardForm>
@@ -25,6 +29,13 @@
     export default {
         name: 'boards',
         components: { boardForm, collab },
+        data(){
+            return{
+            show: false,
+            edit: false,
+            name: this.board
+            }
+        },
         mounted() {
             this.$root.$data.store.actions.getUserBoards()
             this.$root.$data.store.actions.getCollabBoards()

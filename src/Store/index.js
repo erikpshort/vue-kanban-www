@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 let api = axios.create({
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: 'https://bandekanban.herokuapp.com/api/',
     timeout: 20000,
     withCredentials: true
 
@@ -135,10 +135,10 @@ export default {
                 })
                 .catch(handleError)
         },
-        changeList(id){
-            api.put('lists/' + id, list)
+        changeList(id, obj, boardId){
+            api.put('lists/' + id, obj)
             .then(res => {
-                this.getLists()
+                this.getLists(boardId)
             }).catch(handleError)
         },
         deleteList(id, boardId){
